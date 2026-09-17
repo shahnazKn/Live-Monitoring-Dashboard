@@ -26,9 +26,10 @@ function FilterPanel({
     <section className="filter-panel" aria-label="Dashboard filters">
       <h2 className="filter-panel__title">Filters</h2>
       <div className="filter-panel__fields">
-        <label className="field">
+        <label className="field" htmlFor="filter-severity">
           <span>Severity</span>
           <select
+            id="filter-severity"
             value={severityFilter}
             onChange={(e) => onSeverityChange(e.target.value as SeverityFilter)}
           >
@@ -39,9 +40,10 @@ function FilterPanel({
           </select>
         </label>
 
-        <label className="field">
+        <label className="field" htmlFor="filter-time-window">
           <span>Time window</span>
           <select
+            id="filter-time-window"
             value={timeWindow}
             onChange={(e) => onTimeWindowChange(Number(e.target.value) as TimeWindowMinutes)}
           >
@@ -51,9 +53,10 @@ function FilterPanel({
           </select>
         </label>
 
-        <label className="field">
+        <label className="field" htmlFor="filter-buffer-size">
           <span>Buffer size</span>
           <input
+            id="filter-buffer-size"
             type="number"
             min={50}
             max={2000}
@@ -63,9 +66,10 @@ function FilterPanel({
           />
         </label>
 
-        <label className="field">
+        <label className="field" htmlFor="filter-throttle">
           <span>Throttle (ms)</span>
           <input
+            id="filter-throttle"
             type="number"
             min={50}
             max={1000}

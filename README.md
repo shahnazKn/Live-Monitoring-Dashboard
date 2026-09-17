@@ -10,6 +10,7 @@ React + TypeScript real-time monitoring dashboard built for the Suadeo front-end
 | **React 18+/19** + **TypeScript** | Required assessment stack (functional components + hooks) |
 | **recharts** | Live time-series chart without custom SVG plumbing |
 | **@tanstack/react-virtual** | Virtualizes the events list so large buffers stay smooth |
+| **Vitest + React Testing Library** | Automated tests for validation, stream logic, and UI controls |
 
 No API keys or secrets are used. The live source is a **simulated stream** (`StreamClient`) that emits continuous events, including occasional malformed payloads and connection drops.
 
@@ -18,6 +19,7 @@ No API keys or secrets are used. The live source is a **simulated stream** (`Str
 ```bash
 npm install
 npm run dev
+npm run test:run
 ```
 
 Then open the URL Vite prints (usually `http://localhost:5173`).
@@ -46,6 +48,26 @@ src/
 - In-memory buffer is **capped** (default 500; configurable 50–2000).
 - Chart animation is disabled; list rows are **virtualized**.
 - Hot widgets are wrapped in `React.memo`; derived KPIs/filters use `useMemo`.
+
+### Load characteristics (before / after)
+
+| Scenario | Without optimization | With current implementation |
+|---|---|---|
+| Stream rate | ~75 events/sec (3 events every 40ms) | Same input |
+| React updates | ~75 state updates/sec | ~10 batched updates/sec (100ms throttle) |
+| DOM rows rendered | Up to 500 list nodes | ~10–15 visible virtual rows |
+| Memory growth | Unbounded without a cap | Capped at 500 events (configurable) |
+
+## Tests
+
+Vitest + React Testing Library cover the highest-risk areas:
+
+- `validate.test.ts` — untrusted payload validation and sanitization
+- `helpers.test.ts` — KPI math, filters, bounded buffer
+- `streamClient.test.ts` — pause/resume, reconnect backoff, error state
+- `ConnectionBar.test.tsx` — connection controls and status rendering
+- `FilterPanel.test.tsx` — filter interactions
+- `KpiCards.test.tsx` — KPI display and active filter scope
 
 ## Security decisions
 
